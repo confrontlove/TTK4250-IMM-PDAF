@@ -99,7 +99,9 @@ classdef IMMPDAF
            lls = obj.loglikelihoodRatios(Z, sprobs, x, P);
            
            % probabilities
-           beta = exp(lls - logSumExp(lls));
+           % beta = exp(lls - logSumExp(lls));
+           beta = exp(lls);
+           beta = beta / sum(beta);
         end
         
         function [sprobsupd, xupd, Pupd] = conditionalUpdate(obj, Z, sprobs, x, P)
@@ -125,7 +127,7 @@ classdef IMMPDAF
             Pupd = zeros([size(P), m + 1]);
             
             % undetected
-            sprobsupd(:, 1) = sprobs;
+            sprobsupd(:, 1) = obj.imm.PI*sprobs;
             xupd(:, :, 1) = x;
             Pupd(:, :, :, 1) = P;
             
@@ -150,19 +152,18 @@ classdef IMMPDAF
             % Pred (n x n x M): the covariance of the mode mixtures
             
             M = size(sprobs, 1);
-            
+                        
             joint = sprobs.*beta'; % Joint probability for mode and association (M x m + 1)
             sprobsred = sum(joint, 2); % Marginal mode probabilities (M x 1)
             betaCondS = joint./sprobsred; % Association probabilites conditionend on the mode probabilites (M x m + 1)
-            
-            
+                        
             xSize = size(x);
             PSize = size(P);
             xred = zeros(xSize(1:2));
             Pred = zeros(PSize(1:3));
             for s = 1:M
                 % mean and variance per mode
-                [xred(:, s), Pred(:, : ,s)] = reduceGaussMix(betaCondS(s, :), x(:, s, :), P(:, :, s, :));
+                [xred(:, s), Pred(:, : ,s)] = reduceGaussMix(betaCondS(s, :), squeeze(x(:, s, :)), squeeze(P(:, :, s, :)));
             end
         end
         
