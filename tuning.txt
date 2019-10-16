@@ -8,3 +8,14 @@ lambda = 1e-3
 gateSize = 5^2
 % choose model to tune
 s = 1;
+
+
+r = 10
+qCV = 0.01
+qCT = [0.005, 0.000025]
+
+
+PD = 0.949
+lambda = 1e-3
+gateSize = 10^2
+Tuned only for CV & CT seperately.
