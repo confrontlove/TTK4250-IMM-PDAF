@@ -134,7 +134,7 @@ classdef IMMPDAF
             % detected
             for j = 1:m 
                 % Update conditioned on measurement j
-                [sprobsupd(:, j+1), xupd(:, :, j+1), Pupd(:, :, :, j+1)] = ...
+                [sprobsupd(:, j+1), xupd(:, :, j+1), Pupd(:, :, :, j+1), ~] = ...
                     obj.imm.update(Z(:, j), sprobs, x, P);
             end
         end
