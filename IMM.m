@@ -34,9 +34,8 @@ classdef IMM
            % marginal probability for next model
            % conditionional probability for model at this time step on the next.
 
-
             % Joint probability for this model and next
-            spsjointprobs = obj.PI.*(ones(obj.M, 1)*sprobs');
+            spsjointprobs = obj.PI.*(ones(obj.M, 1)*sprobs(:)');
             % marginal probability for next model
             spredprobs = sum(spsjointprobs, 2);
             % conditionional probability for model at this time step on the next.
@@ -57,7 +56,7 @@ classdef IMM
            Pmix = zeros(size(P));
 
            % mix for each mode, 
-           for s = 1: obj .M
+           for s = 1:obj.M
                 [xmix(: , s) , Pmix(: , :, s)] = ...
                     reduceGaussMix(smixprobs(s , :),x , P) ;
            end
@@ -123,7 +122,7 @@ classdef IMM
                 % mode matched update
                 filter = obj.modeFilters{s};
                 [xupd(:, s) , Pupd(:, :, s)] = ...
-                    filter.update(z, x(:, s), P (:,:, s ));
+                    filter.update(z, x(:, s), P(:,:, s ));
                 logLambdas(s) = filter.loglikelihood(z, x(:, s), P(:, :, s));
            end
         end
@@ -138,7 +137,7 @@ classdef IMM
            % loglikelihood: measurement log likelilhood (total, ie. p(z_k | z_(1:k-1)))
 
             % you might want to use the logSumExp function at the bottom of this file
-            supdprobs = logLambdas + log(sprobs);
+            supdprobs = logLambdas(:) + log(sprobs(:));
             loglikelihood = logSumExp(supdprobs);
             supdprobs = exp(supdprobs - loglikelihood);
         end

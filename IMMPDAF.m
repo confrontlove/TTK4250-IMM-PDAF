@@ -132,7 +132,7 @@ classdef IMMPDAF
             % detected
             for j = 1:m 
                 % Update conditioned on measurement j
-                [sprobsupd(:, j+1), xupd(:, :, j+1), Pupd(:, :, :, j+1)] = ...
+                [sprobsupd(:, j+1), xupd(:, :, j+1), Pupd(:, :, :, j+1), ~] = ...
                     obj.imm.update(Z(:, j), sprobs, x, P);
             end
         end
@@ -162,7 +162,7 @@ classdef IMMPDAF
             Pred = zeros(PSize(1:3));
             for s = 1:M
                 % mean and variance per mode
-                [xred(:, s), Pred(:, : ,s)] = reduceGaussMix(betaCondS(s, :), x(:, s, :), P(:, :, s, :));
+                [xred(:, s), Pred(:, : ,s)] = reduceGaussMix(betaCondS(s, :), squeeze(x(:, s, :)), squeeze(P(:, :, s, :)));
             end
         end
         
